@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stirling-deployment
+  labels:
+    app: stirling
+  namespace: stirling-pdf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stirling
+  template:
+    metadata:
+      labels:
+        app: stirling
+    spec:
+      volumes:
+      - name: stirling-config
+        emptyDir: {}
+      - name: stirling-configmap
+        configMap:
+          name: stirling-pdf-config
+      initContainers:
+      - name: copy-config
+        image: busybox
+        command: ["sh", "-c", "cp /configmap/application.yaml /configs/settings.yml"]
+        volumeMounts:
+        - name: stirling-configmap
+          mountPath: /configmap
+        - name: stirling-config
+          mountPath: /configs
+      containers:
+      - name: stirling-pdf
+        image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: stirling-oauth-secret
+              key: clientId
+        - name: OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: stirling-oauth-secret
+              key: clientSecret
+
+        volumeMounts:
+        - name: stirling-config
+          mountPath: /configs

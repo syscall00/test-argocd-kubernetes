@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stirling-config
+  namespace: stirling-pdf
+data:
+  application.yaml: |
+    security:
+      enableLogin: true
+      csrfDisabled: false
+      loginAttemptCount: 5
+      loginResetTimeMinutes: 120
+      loginMethod: oauth2
+      initialLogin:
+        username: admin
+        password: password
+      oauth2:
+        enabled: true
+        issuer: https://authentik.local-lab.theworkpc.com/application/o/stirling-pdf/
+        clientId: ${OAUTH_CLIENT_ID}
+        clientSecret: ${OAUTH_CLIENT_SECRET}
+        autoCreateUser: true
+        blockRegistration: false
+        useAsUsername: email
+        scopes: openid, profile, email
+        provider: authentik
+        client:
+          keycloak:
+            issuer: ''
+            clientId: ''
+            clientSecret: ''
+            scopes: openid, profile, email
+            useAsUsername: preferred_username
+          google:
+            clientId: ''
+            clientSecret: ''
+            scopes: https://www.googleapis.com/auth/userinfo.email, https://www.googleapis.com/auth/userinfo.profile
+            useAsUsername: email
+          github:
+            clientId: ''
+            clientSecret: ''
+            scopes: read:user
+            useAsUsername: login
+      saml2:
+        enabled: false
+        autoCreateUser: true
+        blockRegistration: false
+        registrationId: stirling
+        idpMetadataUri: https://dev-XXXXXXXX.okta.com/app/externalKey/sso/saml/metadata
+        idpSingleLogoutUrl: https://dev-XXXXXXXX.okta.com/app/dev-XXXXXXXX_stirlingpdf_1/externalKey/slo/saml
+        idpSingleLoginUrl: https://dev-XXXXXXXX.okta.com/app/dev-XXXXXXXX_stirlingpdf_1/externalKey/sso/saml
+        idpIssuer: http://www.okta.com/externalKey
+        idpCert: classpath:okta.crt
+        privateKey: classpath:saml-private-key.key
+        spCert: classpath:saml-public-cert.crt
+    enterpriseEdition:
+      enabled: false
+      key: 00000000-0000-0000-0000-000000000000
+      SSOAutoLogin: false
+      CustomMetadata:
+        autoUpdateMetadata: false
+        author: username
+        creator: Stirling-PDF
+        producer: Stirling-PDF
+    legal:
+      termsAndConditions: https://www.stirlingpdf.com/terms-and-conditions
+      privacyPolicy: https://www.stirlingpdf.com/privacy-policy
+      accessibilityStatement: ''
+      cookiePolicy: ''
+      impressum: ''
+    system:
+      defaultLocale: en-US
+      googlevisibility: false
+      enableAlphaFunctionality: false
+      showUpdate: false
+      showUpdateOnlyAdmin: false
+      customHTMLFiles: false
+      tessdataDir: /usr/share/tessdata
+      enableAnalytics: 'true'
+      datasource:
+        enableCustomDatabase: false
+        customDatabaseUrl: ''
+        username: postgres
+        password: postgres
+        type: postgresql
+        hostName: localhost
+        port: 5432
+        name: postgres
+    ui:
+      appName: ''
+      homeDescription: ''
+      appNameNavbar: ''
+    endpoints:
+      toRemove: []
+      groupsToRemove: []
+    metrics:
+      enabled: true
+    AutomaticallyGenerated:
+      key: 7655f4f1-04d8-495b-8700-2a0e02d77967
+      UUID: 613476d8-729e-4f55-8b13-55bae2ce0fae
+      appVersion: 0.37.1
+    processExecutor:
+      sessionLimit:
+        libreOfficeSessionLimit: 1
+        pdfToHtmlSessionLimit: 1
+        qpdfSessionLimit: 4
+        tesseractSessionLimit: 1
+        pythonOpenCvSessionLimit: 8
+        weasyPrintSessionLimit: 16
+        installAppSessionLimit: 1
+        calibreSessionLimit: 1
+      timeoutMinutes:
+        libreOfficetimeoutMinutes: 30
+        pdfToHtmltimeoutMinutes: 20
+        pythonOpenCvtimeoutMinutes: 30
+        weasyPrinttimeoutMinutes: 30
+        installApptimeoutMinutes: 60
+        calibretimeoutMinutes: 30
+        tesseractTimeoutMinutes: 30
