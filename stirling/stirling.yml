@@ -20,7 +20,7 @@ spec:
         emptyDir: {}
       - name: stirling-configmap
         configMap:
-          name: stirling-pdf-config
+          name: stirling-config
       initContainers:
       - name: copy-config
         image: busybox
@@ -36,6 +36,9 @@ spec:
         ports:
         - containerPort: 8080
         env:
+        - name: DOCKER_ENABLE_SECURITY
+          value: "true"
+
         - name: OAUTH_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -46,7 +49,6 @@ spec:
             secretKeyRef:
               name: stirling-oauth-secret
               key: clientSecret
-
         volumeMounts:
         - name: stirling-config
           mountPath: /configs

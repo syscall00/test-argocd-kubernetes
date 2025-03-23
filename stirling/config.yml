@@ -6,14 +6,14 @@ metadata:
 data:
   application.yaml: |
     security:
-      enableLogin: true
+      enableLogin: 'true'
       csrfDisabled: false
       loginAttemptCount: 5
       loginResetTimeMinutes: 120
       loginMethod: oauth2
       initialLogin:
         username: admin
-        password: password
+        password: passwordd
       oauth2:
         enabled: true
         issuer: https://authentik.local-lab.theworkpc.com/application/o/stirling-pdf/
