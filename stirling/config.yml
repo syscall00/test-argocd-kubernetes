@@ -16,7 +16,7 @@ data:
         password: passwordd
       oauth2:
         enabled: true
-        issuer: https://authentik.local-lab.theworkpc.com/application/o/stirling-pdf/
+        issuer: https://sso.infrazone.cc/application/o/stirling-pdf/
         clientId: ${OAUTH_CLIENT_ID}
         clientSecret: ${OAUTH_CLIENT_SECRET}
         autoCreateUser: true

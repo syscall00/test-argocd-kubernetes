@@ -6,15 +6,13 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod-http"
   namespace: stirling-pdf
 
-#  annotations:
-#    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   tls:
   - hosts:
-    - test.infrazone.cc
+    - "pdf.infrazone.cc"
     secretName: letsencrypt-prod
   rules:
-  - host: "test.infrazone.cc"
+  - host: "pdf.infrazone.cc"
     http  :
       paths:
       - path: "/"

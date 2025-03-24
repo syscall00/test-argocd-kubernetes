@@ -32,7 +32,7 @@ spec:
           mountPath: /configs
       containers:
       - name: stirling-pdf
-        image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:latest
+        image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:0.44.3-fat
         ports:
         - containerPort: 8080
         env:
