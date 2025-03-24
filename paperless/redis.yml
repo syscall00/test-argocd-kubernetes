@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+  namespace: paperless
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+#      volumes:
+#      - name: stirling-config
+#        emptyDir: {}
+#      - name: stirling-configmap
+#        configMap:
+#          name: stirling-config
+#      initContainers:
+#      - name: copy-config
+#        image: busybox
+#        command: ["sh", "-c", "cp /configmap/application.yaml /configs/settings.yml"]
+#        volumeMounts:
+#        - name: stirling-configmap
+#          mountPath: /configmap
+#        - name: stirling-config
+#          mountPath: /configs
+      containers:
+      - name: redis
+        image: redis@sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952 # :7.4.2-alpine
+        ports:
+        - containerPort: 6379
+#        env:
+#        - name: DOCKER_ENABLE_SECURITY
+#          value: "true"
+
+#        - name: OAUTH_CLIENT_ID
+#          valueFrom:
+#            secretKeyRef:
+#              name: stirling-oauth-secret
+#              key: clientId
+#        - name: OAUTH_CLIENT_SECRET
+#          valueFrom:
+#            secretKeyRef:
+#              name: stirling-oauth-secret
+#              key: clientSecret
+#        volumeMounts:
+#        - name: stirling-config
+#          mountPath: /configs

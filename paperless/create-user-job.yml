@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  creationTimestamp: null
+  name: create-user
+  namespace: paperless
+spec:
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+      - image: postgres@sha256:7f29c02ba9eeff4de9a9f414d803faa0e6fe5e8d15ebe217e3e418c82e652b35
+        name: create-user
+        command:
+            - sh
+            - -c
+            - |
+              export PGPASSWORD="8XX\SZ|~sSoEq,9GQv_J"
+
+              psql -h postgres-svc.metal.svc.cluster.local -U postgres -d postgres -v ON_ERROR_STOP=1 <<EOF
+              SELECT 'CREATE DATABASE paperless' 
+              WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'paperless')\gexec
+              EOF
+
+              psql -h postgres-svc.metal.svc.cluster.local -U postgres -d paperless -v ON_ERROR_STOP=1 <<EOF
+              DO \$\$
+              BEGIN
+                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'paperless') THEN
+                  CREATE USER paperless WITH PASSWORD 'paperless';
+                END IF;
+              END
+              \$\$;
+
+              GRANT ALL PRIVILEGES ON DATABASE paperless TO paperless;
+              GRANT USAGE ON SCHEMA public TO paperless;
+              GRANT CREATE ON SCHEMA public TO paperless;
+              ALTER SCHEMA public OWNER TO paperless;
+              EOF
+
+      restartPolicy: Never

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: paperless-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod-http"
+  namespace: paperless
+
+spec:
+  tls:
+  - hosts:
+    - "docs.infrazone.cc"
+    secretName: letsencrypt-prod
+  rules:
+  - host: "docs.infrazone.cc"
+    http  :
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: paperless-svc
+            port:
+              name: http

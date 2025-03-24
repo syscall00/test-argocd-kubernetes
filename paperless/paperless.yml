@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless
+  labels:
+    app: paperless
+  namespace: paperless
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless
+  template:
+    metadata:
+      labels:
+        app: paperless
+    spec:
+#      volumes:
+#      - name: stirling-config
+#        emptyDir: {}
+#      - name: stirling-configmap
+#        configMap:
+#          name: stirling-config
+#      initContainers:
+#      - name: copy-config
+#        image: busybox
+#        command: ["sh", "-c", "cp /configmap/application.yaml /configs/settings.yml"]
+#        volumeMounts:
+#        - name: stirling-configmap
+#          mountPath: /configmap
+#        - name: stirling-config
+#          mountPath: /configs
+      containers:
+      - name: paperless-ngx
+        image: paperlessngx/paperless-ngx@sha256:2a6d9f6461ad7e8335f5b2123a173b9e6002fda209af8a66483b0c00629569ab # 2.14
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PAPERLESS_REDIS
+          valueFrom:
+            configMapKeyRef:
+              name: paperless-config
+              key: paperless_redis
+
+        - name: PAPERLESS_DBHOST
+          valueFrom:
+            configMapKeyRef:
+              name: paperless-config
+              key: paperless_dbhost
+
+#        - name: OAUTH_CLIENT_ID
+#          valueFrom:
+#            secretKeyRef:
+#              name: stirling-oauth-secret
+#              key: clientId
+#        - name: OAUTH_CLIENT_SECRET
+#          valueFrom:
+#            secretKeyRef:
+#              name: stirling-oauth-secret
+#              key: clientSecret
+#        volumeMounts:
+#        - name: stirling-config
+#          mountPath: /configs
